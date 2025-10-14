@@ -1,0 +1,166 @@
+选择题
+1，D
+2，C
+3，C
+4,  A
+5,  C
+6,  B
+7,  B
+8,  B
+python
+import random
+import math
+n = random.randint(1, 100)  
+a, b, cnt = 1, 100, 0
+while a <= b:
+    cnt += 1
+    m = math.ceil((a + b) / 2) 
+    if n < m:
+        b = m - 1
+    elif n>m:
+        a = m + 1
+    else:
+        break
+print(cnt)
+
+n = int(input())
+S = 0
+sign = 1
+k = 1
+
+for i in range(n):
+    k = k*(1+i)
+    S += sign * k
+    sign = -sign
+print(S)
+
+
+def Change(radix, num):
+    g = []
+    while num != 0:
+        r = num % radix
+        num = num // radix
+        g.append(r)
+    ans = ''
+    t = ('A', 'B', 'C', 'D', 'E', 'F')
+    for x in range(len(g)):
+        if g[x] >= 10:
+            ans += t[x]
+        else:
+            ans += str(g[x])
+    return
+print(Change(16, 12455))
+
+#%%
+
+def identical(L):
+    flag = 0
+    L.sort()
+    for i in range(len(L)):
+        if L[i] != L[i]:
+            flag = 1
+            break
+    if flag:
+        return True
+    else:
+        return False
+
+#%%
+a = [5, 1, 2, 3, 5, 9, 6, 7, 4, 6, 8]
+maxlen = 1
+n = 1
+for i in range(1, n):
+    if identical(a):
+        n += 1
+        if maxlen < n:
+            maxlen =n
+    else:
+        n = 1
+print(maxlen)
+
+ pandas
+1,
+import pandas as pd
+df = pd.read_csv('driver.csv')
+average_driver_rating = df['rating'].mean()
+print(average_driver_rating*100)
+
+2,
+percentage_drivers_with_second_language_none = (df['second_language'] == 'None').mean()
+print(1-percentage_drivers_with_second_language_none*100)
+
+3,
+df = pd.concat([
+    pd.read_csv('rides_1.csv'),
+    pd.read_csv('rides_2.csv'),
+    pd.read_csv('rides_3.csv'),
+    pd.read_csv('rides_4.csv')
+],ignore_index=True)
+df = pd.read_csv('rides_1.csv')
+ride_success_rate = (df['status'] == '成功').mean()
+print(ride_success_rate*100)
+
+4,
+result = pd.DataFrame (
+    {
+        'insight_type':['ride_success_rate'],
+        'value':[round(ride_success_rate*100,2)]
+    }
+)
+result.to_csv('analysis_results.csv')
+
+1.简述 Batch Normalization 的基本原理与作用。
+把每层的输入处，把数据集拉回标准正态分布，加速收敛。
+
+2.什么是 Dropout？它在深度神经网络训练中的作用是什么？
+让部分训练神经单元断线，防止训练过拟合。
+
+3.解释梯度裁剪的概念及其在训练过程中的作用。
+梯度发散就剪掉，防止训练时梯度爆炸。
+
+4.什么是早停？为什么它能防止过拟合？
+训练集训练一涨停就中止，防止训练过于依靠某些特征。
+
+5.数据增强（Data Augmentation）在训练过程中的意义是什么？请举例说明。
+对原样本数据增强，提高泛化能力。
+
+6.什么是梯度消失？ 为什么会出现？ 有哪些解决办法？
+链式运算越来越小，前面层越来越学不动，换activation，比如relu等
+
+7.什么是学习率调度？有什么好处？
+自动调整学习率，可以让模型自动寻找合适的学习率。
+
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras.layers import LSTM, Dropout, Dense
+
+# 假设我们用 60 天的价格预测第 61 天价格
+time_steps = 60
+features = 1
+samples = 200
+
+# 构造输入数据 (samples, time_steps, features)
+x_train = np.random.rand(samples, time_steps, features)  # 200个 60天股票价格
+y_train = np.random.rand(samples, 1)                     # 200个 对应的第61天股票价格
+x_test  = np.random.rand(10, time_steps, features)
+
+
+model = tf.keras.models.Sequential([
+    LSTM(4,return_sequences=True,input_shape=(time_steps, features)),
+    Dropout(0.2),
+    LSTM(4,return_sequences=True),
+    Dropout(0.2),
+    Dense(1)
+
+])
+model.summary()
+
+model.compile(loss='mean_squared_error', optimizer='adam')
+model.fit(x_train, y_train,
+          epochs=5,
+          batch_size=16,
+          verbose=0
+           )
+y_pred = model.predict(x_test)
+print(y_pred)
+
